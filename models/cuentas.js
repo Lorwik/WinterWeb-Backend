@@ -42,7 +42,7 @@ const Cuenta = sequelize.define(
         type: DataTypes.DATE,
     },  
     role: {
-      type: DataTypes.ENUM(["user", "mod", "admin"]),
+      type: DataTypes.ENUM(["user", "consejero", "semidios", "dios", "admin"]),
     },
   },
   {

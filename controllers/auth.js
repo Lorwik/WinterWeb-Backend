@@ -1,10 +1,9 @@
 const { matchedData } = require("express-validator");
-const { encrypt, compare } = require("../utils/handlePassword");
+const { encrypt, generateRandomString } = require("../utils/handlePassword");
 const { tokenSign } = require("../utils/handleJwt");
 const { handleHttpError } = require("../utils/handleError");
 const { cuentasModel } = require("../models");
-const bcryptjs = require("bcryptjs");
-
+const { sha256 } = require('js-sha256');
 /**
  * Este controlador es el encargado de registrar un usuario
  * @param {*} req 
@@ -13,8 +12,8 @@ const bcryptjs = require("bcryptjs");
 const registerCtrl = async (req, res) => {
     try {
         req = matchedData(req);
-        const salt = bcryptjs.genSaltSync(10);
-        const password = await encrypt(req.password, salt);
+        const salt = await generateRandomString(32);
+        const password = await sha256(req.password + salt)
         const body = {...req, password, salt };
         const dataUser = await cuentasModel.create(body)
         dataUser.set('password', undefined, {strict: false});

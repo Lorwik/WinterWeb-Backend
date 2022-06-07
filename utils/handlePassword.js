@@ -1,21 +1,22 @@
-const bcryptjs = require("bcryptjs");
+const sha256 = require('js-sha256');
 
 /**
  * Contraseña sin encriptar
  * @param {*} passwordPlain 
  */
 const encrypt = async (passwordPlain, salt) => {
-    const hash = await bcryptjs.hash(passwordPlain, salt)
-    return hash
+    return sha256(passwordPlain + salt)
 };
 
-/**
- * Pasar contraseña sin encriptar y pasar contraseña encriptada
- * @param {*} passwordPlain 
- * @param {*} hashPassword 
- */
-const compare = async (passwordPlain, hashPassword) => {
-    return await bcryptjs.compare(passwordPlain, hashPassword)
-};
+const generateRandomString = (num) => {
+    const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result1= ' ';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < num; i++ ) {
+        result1 += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
 
-module.exports = { encrypt, compare };
+    return result1;
+}
+
+module.exports = { encrypt, generateRandomString };
