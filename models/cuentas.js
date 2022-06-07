@@ -50,4 +50,6 @@ const Cuenta = sequelize.define(
   }
 );
 
+Cuenta.find = Cuenta.findAll;
+Cuenta.findById = Cuenta.findByPk;
 module.exports = Cuenta;

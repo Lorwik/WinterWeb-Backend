@@ -19,4 +19,8 @@ const generateRandomString = (num) => {
     return result1;
 }
 
-module.exports = { encrypt, generateRandomString };
+const comparar = async (passwordPlain, salt, passwordHash) => {
+    return await encrypt(passwordPlain, salt) === passwordHash;
+}
+
+module.exports = { encrypt, generateRandomString, comparar };

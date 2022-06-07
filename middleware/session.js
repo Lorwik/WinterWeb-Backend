@@ -6,7 +6,7 @@ const authMiddleware = async (req, res, next) => {
     try {
         
         if(!req.headers.authorization) {
-            handleHttpError(res, "NEED_SESSION", 401);
+            handleHttpError(res, "NO_HAS_INICIADO_SESION", 401);
             return;
         }
 
@@ -28,7 +28,7 @@ const authMiddleware = async (req, res, next) => {
         next();
 
     } catch (error) {
-        handleHttpError(res, "NOT_SESSION", 401);
+        handleHttpError(res, "NO_HAS_INICIADO_SESION", 401);
     }
 
 }

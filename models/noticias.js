@@ -1,4 +1,4 @@
-const { sequelize } = require("../../config/mysql")
+const { sequelize } = require("../config/mysql")
 const { DataTypes } = require("sequelize");
 
 const Noticia = sequelize.define(
@@ -17,4 +17,4 @@ const Noticia = sequelize.define(
     }
   );
   
-  module.exports = Noticias;
+  module.exports = Noticia;

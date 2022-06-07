@@ -1,5 +1,5 @@
 const { matchedData } = require("express-validator");
-const { encrypt, generateRandomString } = require("../utils/handlePassword");
+const { encrypt, generateRandomString, comparar } = require("../utils/handlePassword");
 const { tokenSign } = require("../utils/handleJwt");
 const { handleHttpError } = require("../utils/handleError");
 const { cuentasModel } = require("../models");
@@ -13,20 +13,21 @@ const registerCtrl = async (req, res) => {
     try {
         req = matchedData(req);
         const salt = await generateRandomString(32);
-        const password = await sha256(req.password + salt)
-        const body = {...req, password, salt };
+        //const password = await sha256(req.password + salt)
+        const password = await encrypt(req.password, salt);
+        const body = { ...req, password, salt };
         const dataUser = await cuentasModel.create(body)
-        dataUser.set('password', undefined, {strict: false});
-    
+        dataUser.set('password', undefined, { strict: false });
+
         const data = {
             token: await tokenSign(dataUser),
             user: dataUser
         }
-    
-        res.send({data});
-        
+
+        res.send({ data });
+
     } catch (error) {
-        console.log("ERROR:",  error)
+        console.log("ERROR:", error)
         handleHttpError(res, "ERROR_REGISTER_USER");
 
     }
@@ -40,34 +41,39 @@ const registerCtrl = async (req, res) => {
 const loginCtrl = async (req, res) => {
     try {
         req = matchedData(req);
-        const user = await cuentasModel.findOne({username: req.username})
+        const user = await cuentasModel.findOne({
+            where: {
+                username: req.username
+            }
+        });
 
-        if(!user) {
-            handleHttpError(res, "ERROR_NOT_EXISTS", 404);
-            return;
+        if (!user) {
+            handleHttpError(res, "USER_NOT_EXISTS", 404);
+            return
         }
 
         const hashPassword = user.get('password');
-        const check = await compare(req.password, hashPassword);
 
-        if(!check) {
+        const salt = user.get('salt');
+        const check = await comparar(req.password, salt, hashPassword);
+
+        if (!check) {
             handleHttpError(res, "PASSWORD_INVALID", 401);
-            return;
+            return
         }
 
-        user.set('password', undefined, {strict: false});
+        user.set('password', undefined, { strict: false })
         const data = {
             token: await tokenSign(user),
             user
         }
 
-        res.send({data});
+        res.send({ data })
 
     } catch (error) {
-        console.log(error)
-        handleHttpError(res, "ERROR_LOGIN_USER");
+        console.log(e)
+        handleHttpError(res, "ERROR_LOGIN_USER")
     }
-
- }
+}
 
 module.exports = { registerCtrl, loginCtrl }
