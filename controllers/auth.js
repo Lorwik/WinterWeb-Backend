@@ -24,6 +24,7 @@ const registerCtrl = async (req, res) => {
             user: dataUser
         }
 
+        res.status(201);
         res.send({ data });
 
     } catch (error) {
@@ -63,6 +64,7 @@ const loginCtrl = async (req, res) => {
         }
 
         user.set('password', undefined, { strict: false })
+        user.set('salt', undefined, { strict: false })
         const data = {
             token: await tokenSign(user),
             user
