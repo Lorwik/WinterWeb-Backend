@@ -23,7 +23,7 @@ router.post("/", authMiddleware, checkRol(["admin"]), insertarNoticia );
 /**
  * Edita una noticia
  */
- router.put("//", authMiddleware, checkRol(["admin"]), editarNoticia );
+ router.put("/", authMiddleware, checkRol(["admin"]), editarNoticia );
 
  /**
   * Elimina una noticia

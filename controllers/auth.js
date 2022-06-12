@@ -78,4 +78,20 @@ const loginCtrl = async (req, res) => {
     }
 }
 
-module.exports = { registerCtrl, loginCtrl }
+/**
+ * Lista de noticias
+ * @param {*} req 
+ * @param {*} res 
+ */
+ const listarCuentas = async (req, res) => {
+    try {
+        const user = req.user;
+        const data = await cuentasModel.find({});
+        res.send({ data, user });
+        
+    } catch (error) {
+        handleHttpError(res, 'ERROR_EN_LISTAR_CUENTAS');
+    }
+}
+
+module.exports = { registerCtrl, loginCtrl, listarCuentas }
