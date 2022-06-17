@@ -10,8 +10,31 @@ const { sha256 } = require('js-sha256');
  * @param {*} res 
  */
 const registerCtrl = async (req, res) => {
+
     try {
         req = matchedData(req);
+        const user = await cuentasModel.findOne({
+            where: {
+                username: req.username
+            }
+        });
+
+        const email = await cuentasModel.findOne({
+            where: {
+                email: req.email
+            }
+        });
+
+        if (user) {
+            handleHttpError(res, "El nombre de usuario ya existe, por favor elija otro.", 404);
+            return
+        }
+
+        if (email) {
+            handleHttpError(res, "Ya hay una cuenta registrada con ese email.", 404);
+            return
+        }
+
         const salt = await generateRandomString(32);
         //const password = await sha256(req.password + salt)
         const password = await encrypt(req.password, salt);
@@ -29,7 +52,7 @@ const registerCtrl = async (req, res) => {
 
     } catch (error) {
         console.log("ERROR:", error)
-        handleHttpError(res, "ERROR_REGISTER_USER");
+        handleHttpError(res, "Error al registrar la cuenta.");
 
     }
 }
@@ -49,7 +72,7 @@ const loginCtrl = async (req, res) => {
         });
 
         if (!user) {
-            handleHttpError(res, "USER_NOT_EXISTS", 404);
+            handleHttpError(res, "El usuario o la contraseña son incorrectos.", 404);
             return
         }
 
@@ -59,7 +82,7 @@ const loginCtrl = async (req, res) => {
         const check = await comparar(req.password, salt, hashPassword);
 
         if (!check) {
-            handleHttpError(res, "PASSWORD_INVALID", 401);
+            handleHttpError(res, "El usuario o la contraseña son incorrectos.", 401);
             return
         }
 
@@ -73,8 +96,8 @@ const loginCtrl = async (req, res) => {
         res.send({ data })
 
     } catch (error) {
-        console.log(e)
-        handleHttpError(res, "ERROR_LOGIN_USER")
+        console.log(error)
+        handleHttpError(res, "Erro al iniciar sesión.")
     }
 }
 
@@ -90,7 +113,7 @@ const loginCtrl = async (req, res) => {
         res.send({ data, user });
         
     } catch (error) {
-        handleHttpError(res, 'ERROR_EN_LISTAR_CUENTAS');
+        handleHttpError(res, 'Error al listar las cuentas.');
     }
 }
 

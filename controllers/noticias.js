@@ -14,7 +14,7 @@ const listarNoticias = async (req, res) => {
         res.send({ data, user });
         
     } catch (error) {
-        handleHttpError(res, 'ERROR_EN_LISTAR_NOTICIAS');
+        handleHttpError(res, 'Error al listar las noticias.');
     }
 }
 
@@ -31,7 +31,7 @@ const getNoticia = async (req, res) => {
         res.send( {data} );
 
     } catch (error) {
-        handleHttpError(res, 'ERROR_GET_NOTICIA')
+        handleHttpError(res, 'Error al obtener la noticias.')
         
     }
 };
@@ -48,7 +48,7 @@ const insertarNoticia = async (req, res) => {
         res.send({ data });
 
     } catch (error) {
-        handleHttpError(res, 'ERROR_INSERTAR_NOTICIA');
+        handleHttpError(res, 'Error al publicar la noticias.');
     }
 }
 
@@ -67,7 +67,7 @@ const editarNoticia = async (req, res) => {
         res.send({ data });
         
     } catch (error) {
-        handleHttpError(res, 'ERROR_EDITAR_ NOTICIA');
+        handleHttpError(res, 'Error al editar la noticia.');
     }
  }
 
@@ -84,7 +84,7 @@ const eliminarNoticia = async (req, res) => {
         res.send( {data} );
 
     } catch (error) {
-        handleHttpError(res, 'ERROR_ELIMINAR_NOTICIA')
+        handleHttpError(res, 'Error al eliminar la noticia.')
         
     }
  }
