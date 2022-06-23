@@ -13,7 +13,7 @@ const tokenSign = async (user) => {
         },
         JWT_SECRET,
         {
-            expiresIn: '2h'
+            expiresIn: '12h'
         }
     );
 
@@ -28,11 +28,11 @@ const tokenSign = async (user) => {
 const verifyToken = async (tokenJwt) => {
     try {
         return jwt.verify(tokenJwt, JWT_SECRET);
-        
+
     } catch (error) {
         return null;
 
     }
- }
+}
 
- module.exports = { tokenSign, verifyToken }
+module.exports = { tokenSign, verifyToken }

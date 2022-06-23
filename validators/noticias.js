@@ -5,11 +5,12 @@ const validatorInsertarNoticia = [
     check("titulo")
     .exists()
     .notEmpty()
-    .isLength({ min: 5, max: 90 }),
+    .isLength({ min: 6, max: 100 }),
 
     check("cuerpo")
     .exists()
-    .notEmpty(),
+    .notEmpty()
+    .isLength({ min: 6, max: 8000 }),
 
     (req, res, next) => {
         validationResult(req, res, next);

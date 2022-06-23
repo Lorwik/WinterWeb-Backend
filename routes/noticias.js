@@ -6,7 +6,27 @@ const authMiddleware = require('../middleware/session');
 const checkRol = require('../middleware/rol');
 
 /**
- * Obtiene la lista de noticias
+ * Get all noticias
+ * @openapi
+ * /storage:
+ *    get:
+ *      tags:
+ *        - noticias
+ *      summary: "Listar noticias"
+ *      description: Obten todas las listas de las mptocoas
+ *      security:
+ *        - bearerAuth: []
+ *      responses:
+ *        '200':
+ *          description: Retorna la listas de las noticias.
+ *          content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/noticias'
+ *        '422':
+ *          description: Error de validacion.
  */
 router.get("/", listarNoticias);
 
@@ -18,7 +38,7 @@ router.get("/:id", validatorObtenerNoticia, getNoticia);
 /**
  * Crear una noticia
  */
-router.post("/", authMiddleware, checkRol(["admin"]), insertarNoticia );
+router.post("/",  checkRol(["admin"]), validatorInsertarNoticia, insertarNoticia );
 
 /**
  * Edita una noticia

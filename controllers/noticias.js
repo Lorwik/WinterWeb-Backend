@@ -1,6 +1,6 @@
 const { matchedData } = require ("express-validator");
-const { noticiasModel } = require('../models/noticias.js');
 const { handleHttpError } = require('../utils/handleError');
+const { noticiasModel } = require("../models");
 
 /**
  * Lista de noticias
@@ -10,10 +10,11 @@ const { handleHttpError } = require('../utils/handleError');
 const listarNoticias = async (req, res) => {
     try {
         const user = req.user;
-        const data = await noticiasModel.find({});
+        const data = await noticiasModel.findAll({});
         res.send({ data, user });
         
     } catch (error) {
+        console.log(error)
         handleHttpError(res, 'Error al listar las noticias.');
     }
 }
@@ -27,11 +28,12 @@ const getNoticia = async (req, res) => {
     try {
         req = matchedData(req);
         const { id } = req;
-        const data = await noticiasModel.findById(id);
+        const data = await noticiasModel.findOne(id);
+        res.status(201);
         res.send( {data} );
 
     } catch (error) {
-        handleHttpError(res, 'Error al obtener la noticias.')
+        handleHttpError(res, 'Error al obtener las noticias.')
         
     }
 };
@@ -43,12 +45,14 @@ const getNoticia = async (req, res) => {
  */
 const insertarNoticia = async (req, res) => { 
     try {
+        console.log("REQ: ", req)
         const body = matchedData(req);
         const data = await noticiasModel.create(body);
+        res.status(201);
         res.send({ data });
 
     } catch (error) {
-        handleHttpError(res, 'Error al publicar la noticias.');
+        handleHttpError(res, 'Error al publicar la noticia.');
     }
 }
 

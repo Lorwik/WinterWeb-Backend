@@ -51,7 +51,6 @@ const registerCtrl = async (req, res) => {
         res.send({ data });
 
     } catch (error) {
-        console.log("ERROR:", error)
         handleHttpError(res, "Error al registrar la cuenta.");
 
     }
@@ -92,7 +91,8 @@ const loginCtrl = async (req, res) => {
             token: await tokenSign(user),
             user
         }
-
+        
+        res.status(201);
         res.send({ data })
 
     } catch (error) {
@@ -117,4 +117,21 @@ const loginCtrl = async (req, res) => {
     }
 }
 
-module.exports = { registerCtrl, loginCtrl, listarCuentas }
+const renewToken = async(req, res) => {
+
+    const uid = req.uid;
+
+    console.log(req.uid)
+
+    // Generar el TOKEN - JWT
+    const token = await tokenSign( uid );
+
+
+    res.json({
+        ok: true,
+        token
+    });
+
+}
+
+module.exports = { registerCtrl, loginCtrl, listarCuentas, renewToken }
