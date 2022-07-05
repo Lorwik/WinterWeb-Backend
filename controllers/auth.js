@@ -3,7 +3,6 @@ const { encrypt, generateRandomString, comparar } = require("../utils/handlePass
 const { tokenSign } = require("../utils/handleJwt");
 const { handleHttpError } = require("../utils/handleError");
 const { cuentasModel } = require("../models");
-const { sha256 } = require('js-sha256');
 /**
  * Este controlador es el encargado de registrar un usuario
  * @param {*} req 
@@ -40,11 +39,9 @@ const registerCtrl = async (req, res) => {
         const password = await encrypt(req.password, salt);
         const body = { ...req, password, salt };
         const dataUser = await cuentasModel.create(body)
-        dataUser.set('password', undefined, { strict: false });
 
         const data = {
             token: await tokenSign(dataUser),
-            user: dataUser
         }
 
         res.status(201);
@@ -85,20 +82,57 @@ const loginCtrl = async (req, res) => {
             return
         }
 
-        user.set('password', undefined, { strict: false })
-        user.set('salt', undefined, { strict: false })
         const data = {
             token: await tokenSign(user),
-            user
         }
-        
+
         res.status(201);
         res.send({ data })
 
     } catch (error) {
-        console.log(error)
-        handleHttpError(res, "Erro al iniciar sesión.")
+        handleHttpError(res, "Error al iniciar sesión.")
     }
+}
+
+/**
+ * Este controlador es el encargado de cambiar la pass de una cuenta
+ * @param {*} req 
+ * @param {*} res 
+ */
+cambiarPassCtrl = async (req, res) => {
+
+    try {
+        const id = req.user.id;
+
+        const user = await cuentasModel.findByPk(id);
+
+        const hashPassword = user.get('password');
+        const salt = user.get('salt');
+
+        const check = await comparar(req.body.password, salt, hashPassword);
+
+        if (!check) {
+            handleHttpError(res, "El usuario o la contraseña son incorrectos.", 401);
+            return
+        }
+
+        const newsalt = await generateRandomString(32);
+        const password = await encrypt(req.body.password, newsalt);
+
+        const result = await cuentasModel.update(
+            { password: password,
+              salt: newsalt },
+            { where: { id: id } }
+        );
+
+        res.status(201);
+        res.send(result)
+
+
+    } catch (error) {
+        handleHttpError(res, 'Error al cambiar contraseñas.');
+    }
+
 }
 
 /**
@@ -106,32 +140,15 @@ const loginCtrl = async (req, res) => {
  * @param {*} req 
  * @param {*} res 
  */
- const listarCuentas = async (req, res) => {
+const listarCuentas = async (req, res) => {
     try {
         const user = req.user;
         const data = await cuentasModel.find({});
         res.send({ data, user });
-        
+
     } catch (error) {
         handleHttpError(res, 'Error al listar las cuentas.');
     }
 }
 
-const renewToken = async(req, res) => {
-
-    const uid = req.uid;
-
-    console.log(req.uid)
-
-    // Generar el TOKEN - JWT
-    const token = await tokenSign( uid );
-
-
-    res.json({
-        ok: true,
-        token
-    });
-
-}
-
-module.exports = { registerCtrl, loginCtrl, listarCuentas, renewToken }
+module.exports = { registerCtrl, loginCtrl, listarCuentas, cambiarPassCtrl }

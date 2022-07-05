@@ -38,7 +38,7 @@ router.get("/:id", validatorObtenerNoticia, getNoticia);
 /**
  * Crear una noticia
  */
-router.post("/",  checkRol(["admin"]), validatorInsertarNoticia, insertarNoticia );
+router.post("/", authMiddleware, checkRol(["admin"]), validatorInsertarNoticia, insertarNoticia );
 
 /**
  * Edita una noticia

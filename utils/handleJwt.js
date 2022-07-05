@@ -9,6 +9,11 @@ const tokenSign = async (user) => {
     const sign = jwt.sign(
         {
             id: user.id,
+            username: user.username,
+            email: user.email,
+            vip: user.vip,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
             role: user.role,
         },
         JWT_SECRET,

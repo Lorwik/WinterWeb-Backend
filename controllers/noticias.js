@@ -45,7 +45,6 @@ const getNoticia = async (req, res) => {
  */
 const insertarNoticia = async (req, res) => { 
     try {
-        console.log("REQ: ", req)
         const body = matchedData(req);
         const data = await noticiasModel.create(body);
         res.status(201);
