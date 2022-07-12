@@ -59,7 +59,4 @@ router.post("/cambiarpass", authMiddleware, cambiarPassCtrl);
 
 router.get("/listar", authMiddleware, listarCuentas);
 
-//email route
-router.post('/email', sendEmail);
-
 module.exports = router;

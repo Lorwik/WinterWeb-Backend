@@ -4,11 +4,11 @@ var nodemailer = require('nodemailer');
 sendEmail = function (req, res) {
     // Definimos el transporter
     var transporter = nodemailer.createTransport({
-        host: "smtp.mailtrap.io",
-        port: 2525,
+        host: "smtp.gmail.com",
+        port: 465,
         auth: {
-          user: "7259f869c44838",
-          pass: "9e702df1ec9de9"
+          user: "argentumwinter@gmail.com",
+          pass: "izjhvsthggkwderj"
         }
     });
 

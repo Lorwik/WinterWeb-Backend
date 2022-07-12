@@ -3,6 +3,8 @@ const { encrypt, generateRandomString, comparar } = require("../utils/handlePass
 const { tokenSign } = require("../utils/handleJwt");
 const { handleHttpError } = require("../utils/handleError");
 const { cuentasModel } = require("../models");
+const nodemailer = require('nodemailer');
+
 /**
  * Este controlador es el encargado de registrar un usuario
  * @param {*} req 
@@ -37,12 +39,34 @@ const registerCtrl = async (req, res) => {
         const salt = await generateRandomString(32);
         //const password = await sha256(req.password + salt)
         const password = await encrypt(req.password, salt);
-        const body = { ...req, password, salt };
+        const id_confirmacion = await generateRandomString(12);
+        const body = { ...req, password, salt, id_confirmacion };
         const dataUser = await cuentasModel.create(body)
 
         const data = {
             token: await tokenSign(dataUser),
         }
+
+        // Definimos el transporter
+        var transporter = nodemailer.createTransport({
+            host: "smtp.gmail.com",
+            port: 465,
+            auth: {
+                user: "argentumwinter@gmail.com",
+                pass: "izjhvsthggkwderj"
+            }
+        });
+
+        // Definimos el email
+        var mailOptions = {
+            from: 'no-reply@winterao.com',
+            to: email,
+            subject: 'Comunidad Winter- Verifica tú cuenta',
+            text: 'Hola ' + user + ' te damos la bienvenida a la comunidad Winter. Para verificar tu cuenta, por favor ingresa a la siguiente dirección: http://winterao.com/verify e intruduce el siguiente código: ' + id_confirmacion
+        };
+
+        // Enviamos el email
+        transporter.sendMail(mailOptions, function (error, info) {});
 
         res.status(201);
         res.send({ data });
@@ -120,8 +144,10 @@ cambiarPassCtrl = async (req, res) => {
         const password = await encrypt(req.body.password, newsalt);
 
         const result = await cuentasModel.update(
-            { password: password,
-              salt: newsalt },
+            {
+                password: password,
+                salt: newsalt
+            },
             { where: { id: id } }
         );
 
