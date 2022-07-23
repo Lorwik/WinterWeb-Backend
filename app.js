@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 const port = process.env.PORT || 3000;
+const host = process.env.HOST || 'localhost';
 
 app.use("/api", require("./routes"));
 
@@ -22,8 +23,9 @@ app.use('/documentation', swaggerUI.serve, swaggerUI.setup(openApiConfigration))
  * Invocamos a las rutas
  */
 
-app.listen(port, () => {
-    console.log(`Tu app esta lista por http://localhost:${port}`);
-});
+ app.listen(port, host, function(err) {
+    if (err) return console.log(err);
+    console.log("Listening at http://%s:%s", host, port);
+  });
 
 dbConnectMySql();
