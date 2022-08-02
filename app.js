@@ -23,9 +23,9 @@ app.use('/documentation', swaggerUI.serve, swaggerUI.setup(openApiConfigration))
  * Invocamos a las rutas
  */
 
- app.listen(port, host, function(err) {
+ app.listen(port, function(err) {
     if (err) return console.log(err);
-    console.log("Listening at http://%s:%s", host, port);
+    console.log("Escuchando el puerto %s", port);
   });
 
 dbConnectMySql();
