@@ -162,6 +162,47 @@ cambiarPassCtrl = async (req, res) => {
 }
 
 /**
+ * Este controlador es el encargado de verificar una cuenta
+ * @param {*} req 
+ * @param {*} res 
+ */
+ const verificarCuenta = async (req, res) => {
+    try {
+        req = matchedData(req);
+        const user = await cuentasModel.findOne({
+            where: {
+                username: req.username,
+                codigo: req.codigo
+            }
+        });
+
+        if (!user) {
+            handleHttpError(res, "El usuario o el codigo de verificación es incorrecto.", 404);
+            return
+        }
+
+        if (!codigo) {
+            handleHttpError(res, "El usuario o el codigo de verificación es incorrecto.", 401);
+            return
+        }
+
+        const result = await cuentasModel.update(
+            {
+                status: 1,
+                id_confirmacion: null
+            },
+            { where: { id: id } }
+        );
+
+        res.status(201);
+        res.send({ result })
+
+    } catch (error) {
+        handleHttpError(res, "Error al verificar la cuenta.")
+    }
+}
+
+/**
  * Lista de noticias
  * @param {*} req 
  * @param {*} res 

@@ -1,7 +1,7 @@
 const express = require("express");
 const { loginCtrl, registerCtrl, listarCuentas, cambiarPassCtrl } = require("../controllers/auth")
 const router = express.Router();
-const { validatorRegister, validatorLogin } = require("../validators/auth");
+const { validatorRegister, validatorLogin, validatorVerificacion } = require("../validators/auth");
 const authMiddleware = require('../middleware/session');
 const sendEmail = require('../controllers/mail');
 
@@ -58,5 +58,7 @@ router.post("/login", validatorLogin, loginCtrl);
 router.post("/cambiarpass", authMiddleware, cambiarPassCtrl);
 
 router.get("/listar", authMiddleware, listarCuentas);
+
+router.post("/verificarcuenta", validatorVerificacion, verificarCuenta);
 
 module.exports = router;

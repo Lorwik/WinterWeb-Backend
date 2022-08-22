@@ -42,4 +42,21 @@ const validatorLogin = [
 
 ];
 
-module.exports = { validatorRegister, validatorLogin };
+const validatorVerificacion = [
+    check("codigo")
+    .exists()
+    .notEmpty(),
+
+    check("username")
+    .exists()
+    .notEmpty()
+    .isLength({min:4, max:24}),
+
+    (req, res, next) => {
+        validationResult(req, res, next);
+    }
+
+
+];
+
+module.exports = { validatorRegister, validatorLogin, validatorVerificacion };
