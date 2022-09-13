@@ -7,15 +7,15 @@ sendEmail = function (req, res) {
         host: "smtp.gmail.com",
         port: 465,
         auth: {
-          user: "argentumwinter@gmail.com",
-          pass: "izjhvsthggkwderj"
+          user: "",
+          pass: ""
         }
     });
 
     // Definimos el email
     var mailOptions = {
         from: 'no-reply@winterao.com',
-        to: 'manueljsandalio@gmail.com',
+        to: '',
         subject: 'WinterAO',
         text: 'Los Emails funcionan!'
     };
